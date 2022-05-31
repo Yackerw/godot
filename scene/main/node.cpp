@@ -438,7 +438,6 @@ void Node::move_child(Node *p_child, int p_pos) {
 	// notification second
 	move_child_notify(p_child);
 	Viewport::notify_canvas_parent_children_moved(*this, motion_from, motion_to + 1);
-
 	p_child->_propagate_groups_dirty();
 
 	data.blocked--;
