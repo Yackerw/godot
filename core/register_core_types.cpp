@@ -229,7 +229,7 @@ void register_core_types() {
 	_marshalls = memnew(_Marshalls);
 	_json = memnew(_JSON);
 	_script_server = memnew(_ScriptServer);
-	
+
 	OS::get_singleton()->benchmark_end_measure("register_core_types");
 }
 
