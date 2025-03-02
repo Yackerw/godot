@@ -1700,49 +1700,6 @@ bool Node::is_unique_name_in_owner() const {
 	return data.unique_name_in_owner;
 }
 
-void Node::_release_unique_name_in_owner() {
-	ERR_FAIL_NULL(data.owner); // Sanity check.
-	StringName key = StringName(UNIQUE_NODE_PREFIX + data.name.operator String());
-	Node **which = data.owner->data.owned_unique_nodes.getptr(key);
-	if (which == nullptr || *which != this) {
-		return; // Ignore.
-	}
-	data.owner->data.owned_unique_nodes.erase(key);
-}
-
-void Node::_acquire_unique_name_in_owner() {
-	ERR_FAIL_NULL(data.owner); // Sanity check.
-	StringName key = StringName(UNIQUE_NODE_PREFIX + data.name.operator String());
-	Node **which = data.owner->data.owned_unique_nodes.getptr(key);
-	if (which != nullptr && *which != this) {
-		WARN_PRINT(vformat(RTR("Setting node name '%s' to be unique within scene for '%s', but it's already claimed by '%s'. This node is no longer set unique."), get_name(), is_inside_tree() ? get_path() : data.owner->get_path_to(this), is_inside_tree() ? (*which)->get_path() : data.owner->get_path_to(*which)));
-		data.unique_name_in_owner = false;
-		return;
-	}
-	data.owner->data.owned_unique_nodes[key] = this;
-}
-
-void Node::set_unique_name_in_owner(bool p_enabled) {
-	if (data.unique_name_in_owner == p_enabled) {
-		return;
-	}
-
-	if (data.unique_name_in_owner && data.owner != nullptr) {
-		_release_unique_name_in_owner();
-	}
-	data.unique_name_in_owner = p_enabled;
-
-	if (data.unique_name_in_owner && data.owner != nullptr) {
-		_acquire_unique_name_in_owner();
-	}
-
-	update_configuration_warning();
-}
-
-bool Node::is_unique_name_in_owner() const {
-	return data.unique_name_in_owner;
-}
-
 void Node::set_owner(Node *p_owner) {
 	if (data.owner) {
 		if (data.unique_name_in_owner) {
